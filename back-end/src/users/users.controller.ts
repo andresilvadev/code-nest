@@ -3,6 +3,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { ReturnUserDto } from './dto/return-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Role } from 'src/auth/role.decorator';
+import { UserRole } from './user-roles.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -10,7 +13,8 @@ export class UsersController {
     constructor(private usersService: UsersService) {}
 
     @Post()
-    @UseGuards(AuthGuard())
+    @Role(UserRole.ADMIN)
+    @UseGuards(AuthGuard(), RolesGuard)
     async createAdminUser(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<ReturnUserDto> {
       const user = await this.usersService.createAdminUser(createUserDto);
       return {

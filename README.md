@@ -32,7 +32,7 @@ $ npm run start:dev
 
 * Nest instalado de forma global
 ``` bash
-$ npm installnpm i -g @nestjs/cli
+$ npm i -g @nestjs/cli
 ```
 
 * Typeorm e o Postgres
