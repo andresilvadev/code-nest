@@ -5,10 +5,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { LoggerInterceptor } from './interceptors/logger.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './config/winston.config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), UsersModule, AuthModule],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmConfig),
+    WinstonModule.forRoot(winstonConfig),
+    UsersModule, 
+    AuthModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerInterceptor,
+    },
+  ],
 })
 export class AppModule {}
