@@ -32,25 +32,39 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(updateUserDto: UpdateUserDto, id: string): Promise<User> {
-    const user = await this.findUserById(id);
-    const { name, email, role, status } = updateUserDto;
 
-    user.name = name ? name : user.name;
-    user.email = email ? email : user.email;
-    user.role = role ? role : user.role;
-    user.status = status === undefined ? user.status : status;
+  // async updateUser(updateUserDto: UpdateUserDto, id: string): Promise<User> {
+  //   const user = await this.findUserById(id);
+  //   const { name, email, role, status } = updateUserDto;
 
-    try {
-      await user.save();
+  //   user.name = name ? name : user.name;
+  //   user.email = email ? email : user.email;
+  //   user.role = role ? role : user.role;
+  //   user.status = status === undefined ? user.status : status;
+
+  //   try {
+  //     await user.save();
+  //     return user;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(
+  //       'Erro ao salvar os dados no banco de dados',
+  //     );
+  //   }
+  // }
+
+
+  /**
+   * Update User for Test
+   */
+  async updateUser(updateUserDto: UpdateUserDto, id: string) {
+    const result = await this.userRepository.update({ id }, updateUserDto);
+    if (result.affected > 0) {
+      const user = await this.findUserById(id);
       return user;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Erro ao salvar os dados no banco de dados',
-      );
+    } else {
+      throw new NotFoundException('Usuário não encontrado');
     }
   }
-
 
   async deleteUser(userId: string) {
     const result = await this.userRepository.delete({ id: userId });
